@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>سیستم کامل بارکدخوان و فروش</title>
+ <style>
+ * {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+ }
+ 
+ body {
+ font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+ min-height: 100vh;
+ padding: 10px;
+ }
+ 
+ .container {
+ max-width: 1400px;
+ margin: 0 auto;
+ background: white;
+ border-radius: 15px;
+ box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+ overflow: hidden;
+ }
+ 
+ .header {
+ background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+ color: white;
+ padding: 20px;
+ text-align: center;
+ }
+ 
+ .header h1 {
+ font-size: 2.2em;
+ margin-bottom: 5px;
+ text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+ }
+ 
+ .tabs {
+ display: flex;
+ background: #f8f9fa;
+ border-bottom: 2px solid #dee2e6;
+ }
+ 
+ .tab {
+ flex: 1;
+ padding: 15px;
+ text-align: center;
+ cursor: pointer;
+ background: #e9ecef;
+ border: none;
+ font-size: 16px;
+ font-weight: bold;
+ transition: all 0.3s ease;
+ }
+ 
+ .tab.active {
+ background: white;
+ color: #007bff;
+ border-bottom: 3px solid #007bff;
+ }
+ 
+ .tab:hover {
+ background: #f8f9fa;
+ }
+ 
+ .tab-content {
+ display: none;
+ padding: 30px;
+ }
+ 
+ .tab-content.active {
+ display: block;
+ }
+ 
+ .scan-area {
+ background: #f8f9fa;
+ border: 3px dashed #007bff;
+ border-radius: 15px;
+ padding: 30px;
+ text-align: center;
+ margin: 20px 0;
+ }
+ 
+ .scan-input {
+ width: 100%;
+ padding: 20px;
+ font-size: 24px;
+ border: 3px solid #e9ecef;
+ border-radius: 10px;
+ text-align: center;
+ font-family: 'Courier New', monospace;
+ background: white;
+ transition: all 0.3s ease;
+ }
+ 
+ .scan-input:focus {
+ border-color: #007bff;
+ outline: none;
+ box-shadow: 0 0 20px rgba(0,123,255,0.3);
+ }
+ 
+ .scan-input.scanning {
+ border-color: #28a745;
+ background: #f8fff8;
+ animation: pulse 1s infinite;
+ }
+ 
+ @keyframes pulse {
+ 0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+ 70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+ 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+ }
+ 
+ .form-group {
+ margin: 15px 0;
+ }
+ 
+ .form-group label {
+ display: block;
+ margin-bottom: 5px;
+ font-weight: bold;
+ color: #495057;
+ }
+ 
+ .form-group input, .form-group textarea, .form-group select {
+ width: 100%;
+ padding: 12px;
+ border: 2px solid #dee2e6;
+ border-radius: 8px;
+ font-size: 16px;
+ }
+ 
+ .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+ border-color: #007bff;
+ outline: none;
+ }
+ 
+ .btn {
+ padding: 12px 25px;
+ border: none;
+ border-radius: 8px;
+ cursor: pointer;
+ font-size: 16px;
+ font-weight: bold;
+ transition: all 0.3s ease;
+ margin: 5px;
+ }
+ 
+ .btn-primary { background: #007bff; color: white; }
+ .btn-success { background: #28a745; color: white; }
+ .btn-danger { background: #dc3545; color: white; }
+ .btn-warning { background: #ffc107; color: #212529; }
+ .btn-info { background: #17a2b8; color: white; }
+ 
+ .btn:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+ }
+ 
+ .product-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+ gap: 20px;
+ margin: 20px 0;
+ }
+ 
+ .product-card {
+ background: white;
+ border: 2px solid #dee2e6;
+ border-radius: 10px;
+ padding: 20px;
+ box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+ transition: all 0.3s ease;
+ }
+ 
+ .product-card:hover {
+ border-color: #007bff;
+ transform: translateY(-5px);
+ box-shadow: 0 5px 20px rgba(0,123,255,0.3);
+ }
+ 
+ .product-barcode {
+ text-align: center;
+ margin: 15px 0;
+ }
+ 
+ .product-info {
+ margin: 10px 0;
+ }
+ 
+ .product-info strong {
+ color: #495057;
+ }
+ 
+ .price {
+ font-size: 1.5em;
+ font-weight: bold;
+ color: #28a745;
+ }
+ 
+ .pos-container {
+ display: grid;
+ grid-template-columns: 1fr 400px;
+ gap: 20px;
+ height: 600px;
+ }
+ 
+ .pos-left {
+ background: #f8f9fa;
+ border-radius: 10px;
+ padding: 20px;
+ }
+ 
+ .pos-right {
+ background: #212529;
+ color: white;
+ border-radius: 10px;
+ padding: 20px;
+ font-family: monospace;
+ }
+ 
+ .cart-item {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 10px;
+ border-bottom: 1px solid #495057;
+ margin: 5px 0;
+ }
+ 
+ .cart-item:hover {
+ background: rgba(255,255,255,0.1);
+ }
+ 
+ .cart-total {
+ border-top: 2px solid #ffc107;
+ padding-top: 15px;
+ margin-top: 15px;
+ font-size: 1.2em;
+ font-weight: bold;
+ }
+ 
+ .notification {
+ position: fixed;
+ top: 20px;
+ right: 20px;
+ padding: 15px 25px;
+ border-radius: 10px;
+ color: white;
+ font-weight: bold;
+ z-index: 1000;
+ opacity: 0;
+ transform: translateX(100%);
+ transition: all 0.3s ease;
+ }
+ 
+ .notification.show {
+ opacity: 1;
+ transform: translateX(0);
+ }
+ 
+ .notification.success { background: #28a745; }
+ .notification.error { background: #dc3545; }
+ .notification.info { background: #17a2b8; }
+ 
+ .stats-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+ gap: 15px;
+ margin: 20px 0;
+ }
+ 
+ .stat-box {
+ background: linear-gradient(45deg, #667eea, #764ba2);
+ color: white;
+ padding: 20px;
+ border-radius: 10px;
+ text-align: center;
+ }
+ 
+ .stat-number {
+ font-size: 2em;
+ font-weight: bold;
+ }
+ 
+ .modal {
+ display: none;
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: rgba(0,0,0,0.8);
+ z-index: 2000;
+ }
+ 
+ .modal-content {
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ transform: translate(-50%, -50%);
+ background: white;
+ padding: 30px;
+ border-radius: 15px;
+ max-width: 500px;
+ width: 90%;
+ }
+ 
+ .close {
+ position: absolute;
+ top: 10px;
+ right: 15px;
+ font-size: 30px;
+ cursor: pointer;
+ }
+ 
+ .barcode-display {
+ text-align: center;
+ margin: 20px 0;
+ }
+ 
+ @media (max-width: 768px) {
+ .pos-container {
+ grid-template-columns: 1fr;
+ height: auto;
+ }
+ 
+ .product-grid {
+ grid-template-columns: 1fr;
+ }
+ 
+ .tabs {
+ flex-direction: column;
+ }
+ }
+ </style>
+ 
+ <!-- JsBarcode Library -->
+ <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+ <div class="container">
+ <div class="header">
+ <h1>🛒 سیستم کامل بارکدخوان و فروش</h1>
+ <p>مدیریت محصولات، اسکن بارکد و شبیه‌ساز فروش</p>
+ </div>
+
+ <div class="tabs">
+ <button class="tab active" onclick="showTab('scanner')">🔍 اسکن بارکد</button>
+ <button class="tab" onclick="showTab('products')">📦 مدیریت محصولات</button>
+ <button class="tab" onclick="showTab('pos')">💰 صندوق فروش</button>
+ <button class="tab" onclick="showTab('reports')">📊 گزارشات</button>
+ </div>
+
+ <!-- Tab 1: Scanner -->
+ <div id="scanner" class="tab-content active">
+ <div class="scan-area">
+ <h3>🎯 اسکن بارکد محصولات</h3>
+ <p>روی فیلد زیر کلیک کنید و بارکد را اسکن کنید</p>
+ <input type="text" 
+ id="barcode-input" 
+ class="scan-input"
+ placeholder="🔍 اینجا کلیک کنید و بارکد را اسکن کنید..."
+ autocomplete="off">
+ 
+ <div id="scan-result" style="margin-top: 20px;"></div>
+ </div>
+
+ <div class="stats-grid">
+ <div class="stat-box">
+ <div class="stat-number" id="total-scans">0</div>
+ <div>کل اسکن‌ها</div>
+ </div>
+ <div class="stat-box">
+ <div class="stat-number" id="found-products">0</div>
+ <div>محصولات یافت شده</div>
+ </div>
+ <div class="stat-box">
+ <div class="stat-number" id="unknown-barcodes">0</div>
+ <div>بارکدهای ناشناخته</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Tab 2: Products -->
+ <div id="products" class="tab-content">
+ <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+ <div>
+ <h3>➕ افزودن محصول جدید</h3>
+ <form id="product-form">
+ <div class="form-group">
+ <label>نام محصول:</label>
+ <input type="text" id="product-name" required>
+ </div>
+ 
+ <div class="form-group">
+ <label>بارکد محصول:</label>
+ <div style="display: flex; gap: 10px;">
+ <input type="text" id="product-barcode" required>
+ <button type="button" class="btn btn-info" onclick="generateRandomBarcode()">
+ 🎲 تولید رندوم
+ </button>
+ </div>
+ </div>
+ 
+ <div class="form-group">
+ <label>قیمت (ریال):</label>
+ <input type="number" id="product-price" required>
+ </div>
+ 
+ <div class="form-group">
+ <label>دسته‌بندی:</label>
+ <select id="product-category">
+ <option value="خوراکی">خوراکی</option>
+ <option value="نوشیدنی">نوشیدنی</option>
+ <option value="لبنیات">لبنیات</option>
+ <option value="میوه">میوه و سبزیجات</option>
+ <option value="بهداشتی">بهداشتی</option>
+ <option value="خانگی">خانگی</option>
+ <option value="سایر">سایر</option>
+ </select>
+ </div>
+ 
+ <div class="form-group">
+ <label>موجودی:</label>
+ <input type="number" id="product-stock" value="10">
+ </div>
+ 
+ <div class="form-group">
+ <label>توضیحات:</label>
+ <textarea id="product-description" rows="3"></textarea>
+ </div>
+ 
+ <button type="submit" class="btn btn-success">💾 ذخیره محصول</button>
+ <button type="button" class="btn btn-warning" onclick="generateSampleProducts()">
+ 📦 تولید محصولات نمونه
+ </button>
+ </form>
+ </div>
+ 
+ <div>
+ <h3>📋 لیست محصولات</h3>
+ <div style="margin: 15px 0;">
+ <input type="text" id="search-products" placeholder="🔍 جستجو در محصولات..." 
+ style="width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 8px;">
+ </div>
+ <div id="products-list" class="product-grid"></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Tab 3: POS -->
+ <div id="pos" class="tab-content">
+ <div class="pos-container">
+ <div class="pos-left">
+ <h3>🛒 صندوق فروش</h3>
+ 
+ <div class="scan-area">
+ <h4>اسکن محصول</h4>
+ <input type="text" 
+ id="pos-barcode-input" 
+ class="scan-input"
+ placeholder="🔍 بارکد محصول را اسکن کنید..."
+ autocomplete="off">
+ </div>
+ 
+ <div class="form-group">
+ <label>تعداد:</label>
+ <input type="number" id="pos-quantity" value="1" min="1">
+ </div>
+ 
+ <div style="text-align: center; margin: 20px 0;">
+ <button class="btn btn-success" onclick="addToCart()">➕ افزودن به سبد</button>
+ <button class="btn btn-warning" onclick="clearCart()">🗑️ پاک کردن سبد</button>
+ <button class="btn btn-primary" onclick="processPayment()">💳 پرداخت</button>
+ </div>
+ 
+ <div id="last-scanned-product"></div>
+ </div>
+ 
+ <div class="pos-right">
+ <h3 style="text-align: center; color: #ffc107;">💰 صورتحساب</h3>
+ <hr style="border-color: #ffc107;">
+ 
+ <div id="cart-items"></div>
+ 
+ <div class="cart-total">
+ <div style="display: flex; justify-content: space-between;">
+ <span>تعداد اقلام:</span>
+ <span id="cart-count">0</span>
+ </div>
+ <div style="display: flex; justify-content: space-between;">
+ <span>جمع کل:</span>
+ <span id="cart-total">0 ریال</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Tab 4: Reports -->
+ <div id="reports" class="tab-content">
+ <h3>📊 گزارشات و آمار</h3>
+ 
+ <div class="stats-grid">
+ <div class="stat-box">
+ <div class="stat-number" id="total-products">0</div>
+ <div>کل محصولات</div>
+ </div>
+ <div class="stat-box">
+ <div class="stat-number" id="total-sales">0</div>
+ <div>کل فروش</div>
+ </div>
+ <div class="stat-box">
+ <div class="stat-number" id="total-revenue">0</div>
+ <div>درآمد (ریال)</div>
+ </div>
+ <div class="stat-box">
+ <div class="stat-number" id="avg-sale">0</div>
+ <div>متوسط فروش</div>
+ </div>
+ </div>
+ 
+ <div style="margin: 30px 0;">
+ <button class="btn btn-info" onclick="exportData()">📤 خروجی Excel</button>
+ <button class="btn btn-warning" onclick="importSampleData()">📥 وارد کردن داده نمونه</button>
+ <button class="btn btn-danger" onclick="clearAllData()">🗑️ پاک کردن همه داده‌ها</button>
+ </div>
+ 
+ <div id="sales-log" style="background: #f8f9fa; padding: 20px; border-radius: 10px; max-height: 400px; overflow-y: auto;">
+ <h4>📋 تاریخچه فروش</h4>
+ <div id="sales-history"></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Product Details Modal -->
+ <div id="product-modal" class="modal">
+ <div class="modal-content">
+ <span class="close" onclick="closeModal()">&times;</span>
+ <div id="modal-content"></div>
+ </div>
+ </div>
+
+ <!-- Notification -->
+ <div id="notification" class="notification"></div>
+
+ <script>
+ class SupermarketPOS {
+ constructor() {
+ this.products = JSON.parse(localStorage.getItem('products')) || [];
+ this.cart = [];
+ this.sales = JSON.parse(localStorage.getItem('sales')) || [];
+ this.scanHistory = [];
+ 
+ this.init();
+ this.loadProducts();
+ this.updateReports();
+ }
+
+ init() {
+ // Scanner input handlers
+ const scannerInput = document.getElementById('barcode-input');
+ const posInput = document.getElementById('pos-barcode-input');
+ 
+ [scannerInput, posInput].forEach(input => {
+ if (input) {
+ input.addEventListener('input', (e) => this.handleBarcodeInput(e));
+ input.addEventListener('keypress', (e) => {
+ if (e.key === 'Enter') {
+ e.preventDefault();
+ this.processBarcodeInput(e.target);
+ }
+ });
+ 
+ // Auto-focus
+ input.addEventListener('blur', () => {
+ setTimeout(() => input.focus(), 100);
+ });
+ }
+ });
+
+ // Product form
+ const productForm = document.getElementById('product-form');
+ if (productForm) {
+ productForm.addEventListener('submit', (e) => {
+ e.preventDefault();
+ this.addProduct();
+ });
+ }
+
+ // Search products
+ const searchInput = document.getElementById('search-products');
+ if (searchInput) {
+ searchInput.addEventListener('input', (e) => {
+ this.searchProducts(e.target.value);
+ });
+ }
+
+ // Focus on active tab input
+ document.addEventListener('click', () => {
+ const activeTab = document.querySelector('.tab-content.active');
+ const input = activeTab.querySelector('input[type="text"]');
+ if (input && !input.matches(':focus')) {
+ setTimeout(() => input.focus(), 100);
+ }
+ });
+ }
+
+ handleBarcodeInput(e) {
+ const input = e.target;
+ if (input.value.length > 0) {
+ input.classList.add('scanning');
+ 
+ // Auto-process after delay
+ clearTimeout(input.autoProcessTimeout);
+ input.autoProcessTimeout = setTimeout(() => {
+ this.processBarcodeInput(input);
+ }, 300);
+ }
+ }
+
+ processBarcodeInput(input) {
+ const barcode = input.value.trim();
+ if (!barcode) return;
+
+ input.classList.remove('scanning');
+ 
+ if (input.id === 'barcode-input') {
+ this.scanBarcode(barcode);
+ } else if (input.id === 'pos-barcode-input') {
+ this.scanForPOS(barcode);
+ }
+ 
+ input.value = '';
+ this.scanHistory.push({
+ barcode: barcode,
+ timestamp: Date.now(),
+ found: this.findProduct(barcode) !== null
+ });
+ 
+ this.updateScanStats();
+ }
+
+ scanBarcode(barcode) {
+ const product = this.findProduct(barcode);
+ const resultDiv = document.getElementById('scan-result');
+ 
+ if (product) {
+ resultDiv.innerHTML = `
+ <div class="product-card" style="max-width: 500px; margin: 0 auto;">
+ <div class="barcode-display">
+ <canvas id="scanned-barcode"></canvas>
+ </div>
+ <div class="product-info">
+ <h3>${product.name}</h3>
+ <p><strong>بارکد:</strong> ${product.barcode}</p>
+ <p><strong>دسته‌بندی:</strong> ${product.category}</p>
+ <p><strong>موجودی:</strong> ${product.stock} عدد</p>
+ <p><strong>توضیحات:</strong> ${product.description || 'ندارد'}</p>
+ <div class="price">${this.formatPrice(product.price)} ریال</div>
+ </div>
+ <div style="text-align: center; margin-top: 15px;">
+ <button class="btn btn-success" onclick="pos.addProductToCart('${product.barcode}')">
+ ➕ افزودن به سبد خرید
+ </button>
+ <button class="btn btn-info" onclick="pos.showProductDetails('${product.barcode}')">
+ 📋 جزئیات کامل
+ </button>
+ </div>
+ </div>
+ `;
+ 
+ // Generate barcode
+ setTimeout(() => {
+ try {
+ JsBarcode("#scanned-barcode", product.barcode, {
+ format: "CODE128",
+ width: 2,
+ height: 60,
+ displayValue: true
+ });
+ } catch (e) {
+ console.error('Barcode generation error:', e);
+ }
+ }, 100);
+ 
+ this.showNotification('محصول یافت شد!', 'success');
+ } else {
+ resultDiv.innerHTML = `
+ <div class="product-card" style="max-width: 500px; margin: 0 auto; border-color: #dc3545;">
+ <div style="text-align: center; color: #dc3545;">
+ <h3>❌ محصول یافت نشد</h3>
+ <p><strong>بارکد اسکن شده:</strong> <code>${barcode}</code></p>
+ <p>این بارکد در سیستم ثبت نشده است</p>
+ <div style="margin-top: 15px;">
+ <button class="btn btn-primary" onclick="pos.addNewProductWithBarcode('${barcode}')">
+ ➕ ثبت محصول جدید با این بارکد
+ </button>
+ </div>
+ </div>
+ </div>
+ `;
+ 
+ this.showNotification('بارکد ناشناخته!', 'error');
+ }
+ }
+
+ scanForPOS(barcode) {
+ const product = this.findProduct(barcode);
+ const resultDiv = document.getElementById('last-scanned-product');
+ 
+ if (product) {
+ resultDiv.innerHTML = `
+ <div class="product-card">
+ <h4>✅ محصول اسکن شده</h4>
+ <p><strong>${product.name}</strong></p>
+ <p>قیمت: ${this.formatPrice(product.price)} ریال</p>
+ <p>موجودی: ${product.stock} عدد</p>
+ </div>
+ `;
+ 
+ // Auto add to cart
+ setTimeout(() => {
+ this.addToCart(barcode);
+ }, 500);
+ } else {
+ resultDiv.innerHTML = `
+ <div class="product-card" style="border-color: #dc3545;">
+ <h4>❌ محصول یافت نشد</h4>
+ <p>بارکد: <code>${barcode}</code></p>
+ </div>
+ `;
+ }
+ }
+
+ addProduct() {
+ const name = document.getElementById('product-name').value;
+ const barcode = document.getElementById('product-barcode').value;
+ const price = parseFloat(document.getElementById('product-price').value);
+ const category = document.getElementById('product-category').value;
+ const stock = parseInt(document.getElementById('product-stock').value);
+ const description = document.getElementById('product-description').value;
+
+ // Check if barcode already exists
+ if (this.findProduct(barcode)) {
+ this.showNotification('این بارکد قبلاً ثبت شده است!', 'error');
+ return;
+ }
+
+ const product = {
+ id: Date.now(),
+ name,
+ barcode,
+ price,
+ category,
+ stock,
+ description,
+ createdAt: new Date().toISOString()
+ };
+
+ this.products.push(product);
+ this.saveProducts();
+ this.loadProducts();
+ this.updateReports();
+
+ // Clear form
+ document.getElementById('product-form').reset();
+ 
+ this.showNotification('محصول با موفقیت اضافه شد!', 'success');
+ }
+
+ findProduct(barcode) {
+ return this.products.find(p => p.barcode === barcode) || null;
+ }
+
+ loadProducts() {
+ const container = document.getElementById('products-list');
+ if (!container) return;
+
+ container.innerHTML = '';
+
+ this.products.forEach(product => {
+ const productDiv = document.createElement('div');
+ productDiv.className = 'product-card';
+ productDiv.innerHTML = `
+ <div class="barcode-display">
+ <canvas id="barcode-${product.id}"></canvas>
+ </div>
+ <div class="product-info">
+ <h4>${product.name}</h4>
+ <p><strong>بارکد:</strong> ${product.barcode}</p>
+ <p><strong>دسته:</strong> ${product.category}</p>
+ <p><strong>موجودی:</strong> ${product.stock} عدد</p>
+ <div class="price">${this.formatPrice(product.price)} ریال</div>
+ </div>
+ <div style="text-align: center; margin-top: 10px;">
+ <button class="btn btn-info" onclick="pos.showProductDetails('${product.barcode}')">
+ 📋 جزئیات
+ </button>
+ <button class="btn btn-success" onclick="pos.addProductToCart('${product.barcode}')">
+ 🛒 افزودن به سبد
+ </button>
+ <button class="btn btn-danger" onclick="pos.deleteProduct('${product.barcode}')">
+ 🗑️ حذف
+ </button>
+ </div>
+ `;
+ 
+ container.appendChild(productDiv);
+
+ // Generate barcode
+ setTimeout(() => {
+ try {
+ JsBarcode(`#barcode-${product.id}`, product.barcode, {
+ format: "CODE128",
+ width: 1.5,
+ height: 50,
+ displayValue: true,
+ fontSize: 12
+ });
+ } catch (e) {
+ console.error('Barcode generation error:', e);
+ }
+ }, 100);
+ });
+ }
+
+ searchProducts(query) {
+ const container = document.getElementById('products-list');
+ if (!container) return;
+
+ const filteredProducts = this.products.filter(product =>
+ product.name.toLowerCase().includes(query.toLowerCase()) ||
+ product.barcode.includes(query) ||
+ product.category.toLowerCase().includes(query.toLowerCase())
+ );
+
+ container.innerHTML = '';
+ // Re-render filtered products (similar to loadProducts but with filteredProducts)
+ // ... (implementation similar to loadProducts)
+ }
+
+ addToCart(barcode = null) {
+ const barcodeToAdd = barcode || document.getElementById('pos-barcode-input').value.trim();
+ const quantity = parseInt(document.getElementById('pos-quantity').value) || 1;
+
+ if (!barcodeToAdd) return;
+
+ const product = this.findProduct(barcodeToAdd);
+ if (!product) {
+ this.showNotification('محصول یافت نشد!', 'error');
+ return;
+ }
+
+ if (product.stock < quantity) {
+ this.showNotification('موجودی کافی نیست!', 'error');
+ return;
+ }
+
+ // Check if product already in cart
+ const existingItem = this.cart.find(item => item.barcode === barcodeToAdd);
+ if (existingItem) {
+ existingItem.quantity += quantity;
+ existingItem.total = existingItem.quantity * existingItem.price;
+ } else {
+ this.cart.push({
+ ...product,
+ quantity: quantity,
+ total: product.price * quantity
+ });
+ }
+
+ this.updateCart();
+ this.showNotification('محصول به سبد اضافه شد!', 'success');
+ 
+ // Clear inputs
+ document.getElementById('pos-barcode-input').value = '';
+ document.getElementById('pos-quantity').value = '1';
+ }
+
+ addProductToCart(barcode) {
+ document.getElementById('pos-barcode-input').value = barcode;
+ showTab('pos');
+ setTimeout(() => {
+ this.addToCart(barcode);
+ }, 300);
+ }
+
+ updateCart() {
+ const cartContainer = document.getElementById('cart-items');
+ const cartCount = document.getElementById('cart-count');
+ const cartTotal = document.getElementById('cart-total');
+
+ if (!cartContainer) return;
+
+ cartContainer.innerHTML = '';
+
+ let totalItems = 0;
+ let totalAmount = 0;
+
+ this.cart.forEach((item, index) => {
+ totalItems += item.quantity;
+ totalAmount += item.total;
+
+ const cartItemDiv = document.createElement('div');
+ cartItemDiv.className = 'cart-item';
+ cartItemDiv.innerHTML = `
+ <div>
+ <div style="font-weight: bold;">${item.name}</div>
+ <div style="font-size: 0.9em; opacity: 0.8;">${item.quantity} × ${this.formatPrice(item.price)}</div>
+ </div>
+ <div>
+ <div style="font-weight: bold; color: #ffc107;">${this.formatPrice(item.total)}</div>
+ <button onclick="pos.removeFromCart(${index})" style="background: #dc3545; color: white; border: none; padding: 2px 8px; border-radius: 3px; font-size: 0.8em;">حذف</button>
+ </div>
+ `;
+ 
+ cartContainer.appendChild(cartItemDiv);
+ });
+
+ cartCount.textContent = totalItems;
+ cartTotal.textContent = this.formatPrice(totalAmount) + ' ریال';
+ }
+
+ removeFromCart(index) {
+ this.cart.splice(index, 1);
+ this.updateCart();
+ this.showNotification('محصول از سبد حذف شد', 'info');
+ }
+
+ clearCart() {
+ if (this.cart.length === 0) return;
+ 
+ if (confirm('آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟')) {
+ this.cart = [];
+ this.updateCart();
+ document.getElementById('last-scanned-product').innerHTML = '';
+ this.showNotification('سبد خرید خالی شد', 'info');
+ }
+ }
+
+ processPayment() {
+ if (this.cart.length === 0) {
+ this.showNotification('سبد خرید خالی است!', 'error');
+ return;
+ }
+
+ const totalAmount = this.cart.reduce((sum, item) => sum + item.total, 0);
+ const saleId = Date.now();
+
+ // Create sale record
+ const sale = {
+ id: saleId,
+ items: [...this.cart],
+ total: totalAmount,
+ timestamp: new Date().toISOString(),
+ date: new Date().toLocaleDateString('fa-IR')
+ };
+
+ // Update stock
+ this.cart.forEach(cartItem => {
+ const product = this.findProduct(cartItem.barcode);
+ if (product) {
+ product.stock -= cartItem.quantity;
+ }
+ });
+
+ // Save sale
+ this.sales.push(sale);
+ this.saveSales();
+ this.saveProducts();
+
+ // Clear cart
+ this.cart = [];
+ this.updateCart();
+ this.loadProducts();
+ this.updateReports();
+
+ // Show success message
+ this.showNotification(`💳 پرداخت موفق! مبلغ: ${this.formatPrice(totalAmount)} ریال`, 'success');
+ 
+ // Print receipt (simulation)
+ this.printReceipt(sale);
+ }
+
+ printReceipt(sale) {
+ const receiptWindow = window.open('', '_blank');
+ receiptWindow.document.write(`
+ <html>
+ <head>
+ <title>رسید فروش</title>
+ <style>
+ body { font-family: Tahoma; text-align: center; padding: 20px; }
+ .receipt { max-width: 300px; margin: 0 auto; }
+ .item { display: flex; justify-content: space-between; margin: 5px 0; }
+ .total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: bold; }
+ </style>
+ </head>
+ <body>
+ <div class="receipt">
+ <h2>🛒 سوپرمارکت</h2>
+ <p>رسید فروش #${sale.id}</p>
+ <p>${sale.date}</p>
+ <hr>
+ ${sale.items.map(item => `
+ <div class="item">
+ <span>${item.name} (${item.quantity})</span>
+ <span>${this.formatPrice(item.total)}</span>
+ </div>
+ `).join('')}
+ <div class="total">
+ <div class="item">
+ <span>جمع کل:</span>
+ <span>${this.formatPrice(sale.total)} ریال</span>
+ </div>
+ </div>
+ <p style="margin-top: 20px;">با تشکر از خرید شما</p>
+ </div>
+ </body>
+ </html>
+ `);
+ receiptWindow.document.close();
+ receiptWindow.print();
+ }
+
+ showProductDetails(barcode) {
+ const product = this.findProduct(barcode);
+ if (!product) return;
+
+ const modal = document.getElementById('product-modal');
+ const content = document.getElementById('modal-content');
+ 
+ content.innerHTML = `
+ <h3>📋 جزئیات محصول</h3>
+ <div class="barcode-display">
+ <canvas id="modal-barcode"></canvas>
+ </div>
+ <div class="product-info">
+ <p><strong>نام:</strong> ${product.name}</p>
+ <p><strong>بارکد:</strong> ${product.barcode}</p>
+ <p><strong>قیمت:</strong> ${this.formatPrice(product.price)} ریال</p>
+ <p><strong>دسته‌بندی:</strong> ${product.category}</p>
+ <p><strong>موجودی:</strong> ${product.stock} عدد</p>
+ <p><strong>توضیحات:</strong> ${product.description || 'ندارد'}</p>
+ <p><strong>تاریخ ثبت:</strong> ${new Date(product.createdAt).toLocaleDateString('fa-IR')}</p>
+ </div>
+ `;
+ 
+ modal.style.display = 'block';
+ 
+ setTimeout(() => {
+ try {
+ JsBarcode("#modal-barcode", product.barcode, {
+ format: "CODE128",
+ width: 2,
+ height: 80,
+ displayValue: true
+ });
+ } catch (e) {
+ console.error('Barcode generation error:', e);
+ }
+ }, 100);
+ }
+
+ deleteProduct(barcode) {
+ if (confirm('آیا مطمئن هستید که می‌خواهید این محصول را حذف کنید؟')) {
+ this.products = this.products.filter(p => p.barcode !== barcode);
+ this.saveProducts();
+ this.loadProducts();
+ this.updateReports();
+ this.showNotification('محصول حذف شد', 'info');
+ }
+ }
+
+ generateRandomBarcode() {
+ const randomBarcode = Math.floor(Math.random() * 9000000000000) + 1000000000000;
+ document.getElementById('product-barcode').value = randomBarcode.toString();
+ }
+
+ generateSampleProducts() {
+ const sampleProducts = [
+ { name: 'نان تست', category: 'خوراکی', price: 15000, stock: 20, description: 'نان تست تازه و خوشمزه' },
+ { name: 'شیر کم چرب', category: 'لبنیات', price: 25000, stock: 15, description: 'شیر کم چرب یک لیتری' },
+ { name: 'سیب قرمز', category: 'میوه', price: 35000, stock: 30, description: 'سیب قرمز درجه یک' },
+ { name: 'نوشابه کولا', category: 'نوشیدنی', price: 18000, stock: 25, description: 'نوشابه کولا 330 میلی‌لیتر' },
+ { name: 'شامپو بچه', category: 'بهداشتی', price: 45000, stock: 10, description: 'شامپو مخصوص کودکان' }
+ ];
+
+ sampleProducts.forEach(product => {
+ const barcode = Math.floor(Math.random() * 9000000000000) + 1000000000000;
+ this.products.push({
+ id: Date.now() + Math.random(),
+ ...product,
+ barcode: barcode.toString(),
+ createdAt: new Date().toISOString()
+ });
+ });
+
+ this.saveProducts();
+ this.loadProducts();
+ this.updateReports();
+ this.showNotification('محصولات نمونه اضافه شدند!', 'success');
+ }
+
+ addNewProductWithBarcode(barcode) {
+ showTab('products');
+ document.getElementById('product-barcode').value = barcode;
+ document.getElementById('product-name').focus();
+ }
+
+ updateScanStats() {
+ const totalScans = this.scanHistory.length;
+ const foundProducts = this.scanHistory.filter(scan => scan.found).length;
+ const unknownBarcodes = totalScans - foundProducts;
+
+ document.getElementById('total-scans').textContent = totalScans;
+ document.getElementById('found-products').textContent = foundProducts;
+ document.getElementById('unknown-barcodes').textContent = unknownBarcodes;
+ }
+
+ updateReports() {
+ const totalProducts = this.products.length;
+ const totalSales = this.sales.length;
+ const totalRevenue = this.sales.reduce((sum, sale) => sum + sale.total, 0);
+ const avgSale = totalSales > 0 ? Math.round(totalRevenue / totalSales) : 0;
+
+ document.getElementById('total-products').textContent = totalProducts;
+ document.getElementById('total-sales').textContent = totalSales;
+ document.getElementById('total-revenue').textContent = this.formatPrice(totalRevenue);
+ document.getElementById('avg-sale').textContent = this.formatPrice(avgSale);
+
+ // Update sales history
+ const salesHistory = document.getElementById('sales-history');
+ if (salesHistory) {
+ salesHistory.innerHTML = '';
+ this.sales.slice(-10).reverse().forEach(sale => {
+ const saleDiv = document.createElement('div');
+ saleDiv.innerHTML = `
+ <div style="padding: 10px; margin: 5px 0; background: white; border-radius: 5px; border-left: 4px solid #007bff;">
+ <strong>فروش #${sale.id}</strong> - ${sale.date}<br>
+ ${sale.items.length} قلم - مبلغ: ${this.formatPrice(sale.total)} ریال
+ </div>
+ `;
+ salesHistory.appendChild(saleDiv);
+ });
+ }
+ }
+
+ exportData() {
+ const data = {
+ products: this.products,
+ sales: this.sales,
+ exportDate: new Date().toISOString()
+ };
+
+ const dataStr = JSON.stringify(data, null, 2);
+ const dataBlob = new Blob([dataStr], { type: 'application/json' });
+ const url = URL.createObjectURL(dataBlob);
+ 
+ const link = document.createElement('a');
+ link.href = url;
+ link.download = `supermarket_data_${new Date().toISOString().split('T')[0]}.json`;
+ link.click();
+ 
+ this.showNotification('داده‌ها با موفقیت صادر شدند!', 'success');
+ }
+
+ importSampleData() {
+ // Add more sample data
+ this.generateSampleProducts();
+ 
+ // Add some sample sales
+ const sampleSales = [
+ {
+ id: Date.now() - 86400000,
+ items: [{ name: 'نان تست', quantity: 2, price: 15000, total: 30000 }],
+ total: 30000,
+ timestamp: new Date(Date.now() - 86400000).toISOString(),
+ date: new Date(Date.now() - 86400000).toLocaleDateString('fa-IR')
+ }
+ ];
+ 
+ this.sales.push(...sampleSales);
+ this.saveSales();
+ this.updateReports();
+ 
+ this.showNotification('داده‌های نمونه وارد شدند!', 'success');
+ }
+
+ clearAllData() {
+ if (confirm('آیا مطمئن هستید که می‌خواهید تمام داده‌ها را پاک کنید؟')) {
+ this.products = [];
+ this.sales = [];
+ this.cart = [];
+ this.scanHistory = [];
+ 
+ localStorage.removeItem('products');
+ localStorage.removeItem('sales');
+ 
+ this.loadProducts();
+ this.updateCart();
+ this.updateReports();
+ this.updateScanStats();
+ 
+ this.showNotification('تمام داده‌ها پاک شدند!', 'info');
+ }
+ }
+
+ saveProducts() {
+ localStorage.setItem('products', JSON.stringify(this.products));
+ }
+
+ saveSales() {
+ localStorage.setItem('sales', JSON.stringify(this.sales));
+ }
+
+ formatPrice(price) {
+ return new Intl.NumberFormat('fa-IR').format(price);
+ }
+
+ showNotification(message, type = 'info') {
+ const notification = document.getElementById('notification');
+ notification.textContent = message;
+ notification.className = `notification ${type}`;
+ notification.classList.add('show');
+
+ setTimeout(() => {
+ notification.classList.remove('show');
+ }, 3000);
+ }
+ }
+
+ // Global functions
+ function showTab(tabName) {
+ // Hide all tab contents
+ document.querySelectorAll('.tab-content').forEach(tab => {
+ tab.classList.remove('active');
+ });
+ 
+ // Remove active class from all tabs
+ document.querySelectorAll('.tab').forEach(tab => {
+ tab.classList.remove('active');
+ });
+ 
+ // Show selected tab content
+ document.getElementById(tabName).classList.add('active');
+ 
+ // Add active class to selected tab
+ event.target.classList.add('active');
+ 
+ // Focus on input in active tab
+ setTimeout(() => {
+ const activeTab = document.querySelector('.tab-content.active');
+ const input = activeTab.querySelector('input[type="text"]');
+ if (input) input.focus();
+ }, 100);
+ }
+
+ function closeModal() {
+ document.getElementById('product-modal').style.display = 'none';
+ }
+
+ function generateRandomBarcode() {
+ pos.generateRandomBarcode();
+ }
+
+ function generateSampleProducts() {
+ pos.generateSampleProducts();
+ }
+
+ function addToCart() {
+ pos.addToCart();
+ }
+
+ function clearCart() {
+ pos.clearCart();
+ }
+
+ function processPayment() {
+ pos.processPayment();
+ }
+
+ function exportData() {
+ pos.exportData();
+ }
+
+ function importSampleData() {
+ pos.importSampleData();
+ }
+
+ function clearAllData() {
+ pos.clearAllData();
+ }
+
+ // Initialize POS system
+ let pos;
+ window.addEventListener('DOMContentLoaded', () => {
+ pos = new SupermarketPOS();
+ 
+ // Close modal when clicking outside
+ window.addEventListener('click', (e) => {
+ const modal = document.getElementById('product-modal');
+ if (e.target === modal) {
+ closeModal();
+ }
+ });
+ });
+ </script>
+</body>
+</html>
